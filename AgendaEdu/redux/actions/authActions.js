@@ -1,6 +1,7 @@
 import { Actions } from 'react-native-router-flux'
 import Types from '../types/authTypes'
 import Auth from '../../services/Auth'
+import Session from '../../services/Session'
 
 export function signIn(email, password, signInSuccess, signInFail) {
     return (dispatch) => {
@@ -32,6 +33,23 @@ export function signOut(signOutSuccess, signOutFail) {
             dispatch(done())
         })
         
+    }
+}
+
+export function checkSessionStatus(callback) {
+    return (dispatch) => {        
+        Session.Credential.get('@Token:user').then((response) => {
+            if(response) {                
+                dispatch({
+                    type: Types.SIGNED_IN,
+                    data: response
+                })
+                callback(true)
+            }else {
+                dispatch({ type: Types.SIGNED_OUT })
+                callback(false)
+            }
+        })
     }
 }
 
