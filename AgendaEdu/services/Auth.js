@@ -1,39 +1,24 @@
 import Http from './Http'
 import Session from './Session'
 
-
-export default {
-    signIn: (email, password, callback, fail) => {
-        Http.post('/login', {
-            email,
-            password,
-        }).then(responseSuccess.bind(this, callback))
-        .catch(responseFail.bind(this, fail))
-    },
-    signOut: (callback, fail) => {
-        Session.Credential.destroy('@Token:user').then(responseSignOutSuccess.bind(this, callback), responseSignOutFail.bind(this, fail))
-    },
-    configCredentials: configCredentials
+export function signIn(email, password, callback) {
+    Http.post('/login', {
+        email,
+        password,
+    }).then((response) => {
+        saveCredential('@Token:user', response.data)
+        callback(true, response.data, null)
+    })
+    .catch((error) => callback(false, null, error))
 }
 
-function responseSuccess(callback, response) {
-    configCredentials("@Token:user", response.data)
-    return callback(response)
+export function signOut(callback) {
+    Session.Credential.destroy('@Token:user')
+    .then(() => callback(true, null, null))
+    .catch((error) => callback(false, null, error))
 }
 
-function responseFail(fail, error) {
-    return fail(error)
-}
-
-function responseSignOutSuccess(callback, response) {
-    return callback(response)
-}
-
-function responseSignOutFail(fail, error) {
-    return fail(error)
-}
-
-function configCredentials(key, credential) {
+function saveCredential(key, credential) {
     let { token } = credential
     Session.Credential.set(key, token)
 }
