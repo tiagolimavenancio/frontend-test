@@ -21,6 +21,9 @@ export default class App extends React.Component {
       'sf-pro-display-regular': require('./assets/fonts/SF-Pro-Text-Regular.ttf'),
       'sf-pro-display-bold': require('./assets/fonts/SF-Pro-Display-Bold.ttf'),
       'sf-pro-display-ultralight': require('./assets/fonts/SF-Pro-Display-Ultralight.ttf'),
+      'sf-pro-display-medium': require('./assets/fonts/SF-Pro-Display-Medium.ttf'),
+      'sf-pro-text-regular': require('./assets/fonts/SF-Pro-Text-Regular.ttf'),
+      'sf-pro-text-medium': require('./assets/fonts/SF-Pro-Text-Medium.ttf'),
       'Ionicons': require("@expo/vector-icons/fonts/Ionicons.ttf")
     })
   }

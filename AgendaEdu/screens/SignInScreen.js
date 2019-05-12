@@ -17,7 +17,7 @@ import {
     Form,
     Item,
     Icon,
-    InputGroup
+    Footer    
 } from 'native-base';
 
 import { Actions } from 'react-native-router-flux';
@@ -36,11 +36,15 @@ class SignInScreen extends React.Component {
             user: {
                 email: '',
                 password: ''
-            }
+            }, 
+            isEmailFocused: false,
+            isPasswordFocused: false         
         }
         this.submit = this.submit.bind(this)
         this.onSuccess = this.onSuccess.bind(this)
-        this.onError = this.onError.bind(this)        
+        this.onError = this.onError.bind(this)  
+        this.handleEmailFocus = this.handleEmailFocus.bind(this)   
+        this.handlePasswordFocus = this.handlePasswordFocus.bind(this)  
     }
 
     async submit() {
@@ -57,10 +61,22 @@ class SignInScreen extends React.Component {
         Alert.alert('Oops!', error.message)
     }
 
+    handleEmailFocus() {                      
+        this.setState({
+            isEmailFocused: !this.state.isEmailFocused
+        })
+    }
+
+    handlePasswordFocus() {                
+        this.setState({
+            isPasswordFocused: !this.state.isPasswordFocused
+        })
+    }
+
     render() {
         let { auth } = this.props.state
-        let { user } = this.state
-
+        let { user, isEmailFocused, isPasswordFocused } = this.state
+        
         if (auth.isWaiting) {
             return <Loading />
         }
@@ -68,38 +84,52 @@ class SignInScreen extends React.Component {
         return (
             <Container style={styles.container}>
                 <Content contentContainerStyle={styles.content}>
-                    <View>
-                        <View style={styles.title}>
-                            <Title style={{ fontSize: 25, marginRight: 10 }}>Faça seu login</Title>
-                            <Image 
-                                style={{ width: 25, height: 25 }}
-                                source={require('../assets/icons/key.png')} />
-                        </View>
-                        <Form>
-                            <Item stackedLabel style={{ marginBottom: 10 }} last>
-                                <Label style={styles.label}>E-mail ou usuário</Label>
-                                <Input
-                                    style={styles.input} 
+                    <View style={styles.title}>
+                        <Title style={styles.text}>Faça seu login</Title>
+                        <Image 
+                            style={styles.image}
+                            source={require('../assets/icons/key.png')} />
+                    </View>
+                    <Form>
+                        <View>
+                            <Label style={styles.label}>E-mail ou usuário</Label> 
+                            <Item regular style={[styles.input, isEmailFocused ? styles.shadow : {}]}>
+                                <Input      
+                                    ref={(r) => { this.email = r }}                               
                                     returnKeyType='next' 
                                     onChangeText={(email) => this.setState({ user: { ...user, email }})} 
-                                    value={user.email} />
-                                <Icon name='mail' style={styles.icon} />
+                                    onFocus={this.handleEmailFocus} 
+                                    onBlur={this.handleEmailFocus}                                   
+                                    value={user.email} />   
+                                <Icon 
+                                    reverse
+                                    type="FontAwesome" 
+                                    name="envelope-o" 
+                                    style={styles.icon} />                            
                             </Item>
-                            <Item stackedLabel style={{ marginBottom: 10 }} last>
-                                <Label style={styles.label}>Senha</Label>
-                                <Input 
-                                    style={styles.input}
+                        </View> 
+                        <View>
+                            <Label style={styles.label}>Senha</Label> 
+                            <Item regular style={[styles.input, isPasswordFocused ? styles.shadow : {}]}>
+                                <Input    
+                                    ref={(r) => { this.password = r }}                                   
                                     returnKeyType='done' 
                                     secureTextEntry={true}
                                     onChangeText={(password) => this.setState({ user: { ...user, password }})} 
-                                    value={user.password} />
-                                <Icon name='eye-off' style={styles.icon} />
+                                    onFocus={this.handlePasswordFocus}
+                                    onBlur={this.handlePasswordFocus}
+                                    value={user.password}/>  
+                                <Icon                                     
+                                    name="eye-off"
+                                    style={styles.icon} />                
                             </Item>
-                            <Button block style={styles.btn} onPress={this.submit}>
-                                <Text>Entrar</Text>
-                            </Button>
-                        </Form>
-                    </View>
+                        </View>                                                
+                    </Form>   
+                    <View style={styles.sectionButton}>
+                        <Button block style={styles.btn} onPress={this.submit}>
+                            <Text>Entrar</Text>
+                        </Button>
+                    </View>  
                 </Content>
             </Container>
         )
@@ -119,39 +149,64 @@ function mapDispatchToProps(dispatch, ownProps) {
 }
 
 const styles = StyleSheet.create({
-    container: { },
+    container: { 
+        
+        
+    },
     content: {
-        flex: 1,
-        alignItems: 'center',        
+        flex: 1,               
         justifyContent: 'center',
-        paddingHorizontal: 10
+        paddingHorizontal: 24
     }, 
     title: {
         flexDirection: 'row',
-        textAlign: 'left', 
-        marginHorizontal: 18,
         alignItems: 'center',
+        textAlign: 'left',                 
         marginVertical: 36,
         height: 36                         
     }, 
     text: {
-        fontWeight: 'bold',         
-        color: '#333333'
-    },
+        fontSize: 25, 
+        marginRight: 8
+    }, 
     label: {
-        color: '#666666'
+        color: '#666666',
+        fontSize: 14
     },
     input: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
         borderColor: '#ABB1B7',
         borderRadius: 5,
-        borderWidth: 1,
+        borderWidth: 2,
+        height: 50,
+        margin: 10
     },
-    btn: {                       
-        marginHorizontal: 10,              
-        backgroundColor: '#733DBE',                
+    shadow: {               
+        borderColor: '#733DBE',        
+        borderWidth: 2,
+        borderRadius: 5,
+        opacity: 0.8,
+    },  
+    sectionButton: {
+        position:'absolute',
+        bottom: 40,
+        left: 0,
+        right: 0
+    },
+    btn: {                        
+        backgroundColor: '#733DBE',   
+        borderRadius: 5,
+        marginHorizontal: 30        
     },
     icon: {
-        color: '#AAAAAA'           
+        color: '#AAAAAA',
+        fontSize: 19               
+    },
+    image: {
+        width: 25, 
+        height: 25 
     }
 })
 
