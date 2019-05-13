@@ -19,6 +19,7 @@ import {
     Icon,
     Footer    
 } from 'native-base';
+import { Field, reduxForm } from 'redux-form'
 
 import { Actions } from 'react-native-router-flux';
 
@@ -27,33 +28,54 @@ import { bindActionCreators } from 'redux';
 
 import ReduxActions from '../redux/actions';
 import Loading from '../components/Loading';
+import Validates from '../utils/Validates';
+
+// const validate = values => {
+//     const errors = {}
+//     errors.email = !values.email 
+//     ? 'Email is required' 
+//     : !Validates.validateEmail(values.email)
+//     ? 'Email format is invalid'
+//     : undefined;
+//     errors.password = !values.password 
+//     ? 'Password is required' 
+//     : Validates.validatePassword(values.password)
+//     ? 'Password must be at least 6 characters long'
+//     : undefined;
+//     return errors;
+// }
 
 class SignInScreen extends React.Component {
 
     constructor(props){
         super(props)
         this.state = {
-            user: {
-                email: '',
-                password: ''
-            }, 
+            email: '',
+            password: '',
             isEmailFocused: false,
-            isPasswordFocused: false         
+            isEmailValid: true,
+            isPasswordFocused: false,
+            isPasswordValid: true    
         }
+
         this.submit = this.submit.bind(this)
         this.onSuccess = this.onSuccess.bind(this)
         this.onError = this.onError.bind(this)  
         this.handleEmailFocus = this.handleEmailFocus.bind(this)   
-        this.handlePasswordFocus = this.handlePasswordFocus.bind(this)  
+        this.handlePasswordFocus = this.handlePasswordFocus.bind(this) 
     }
 
     async submit() {
-        Keyboard.dismiss()
-        let { user } = this.state
-        await this.props.signIn(user.email, user.password, this.onSuccess, this.onError)
+        Keyboard.dismiss()  
+        if(Validates.isEmpty(this.state.email) || Validates.isEmpty(this.state.password))
+            return Alert.alert('Email and Password is required')  
+
+        (this.state.isEmailValid && this.state.isPasswordValid)
+        ? await this.props.signIn(this.state.email, this.state.password, this.onSuccess, this.onError)
+        : Alert.alert('Invalid Email or Password')           
     }
 
-    onSuccess() {
+    onSuccess() {        
         setTimeout(() => { Actions.authorized({ type: 'reset' }) }, 500)
     }
 
@@ -63,7 +85,7 @@ class SignInScreen extends React.Component {
 
     handleEmailFocus() {                      
         this.setState({
-            isEmailFocused: !this.state.isEmailFocused
+            isEmailFocused: !this.state.isEmailFocused            
         })
     }
 
@@ -73,9 +95,21 @@ class SignInScreen extends React.Component {
         })
     }
 
-    render() {
+    validate(text, type) {          
+        if(type=='email') {                                    
+            Validates.validateEmail(text) 
+            ? this.setState({ email: text, isEmailValid: true }) 
+            : this.setState({ email: text, isEmailValid: false })               
+        } else if (type=='password') {
+            Validates.validatePassword(text)
+            ? this.setState({ password: text, isPasswordValid: true }) 
+            : this.setState({ password: text, isPasswordValid: false }) 
+        }
+    }
+
+    render() {        
         let { auth } = this.props.state
-        let { user, isEmailFocused, isPasswordFocused } = this.state
+        let { email, password, isEmailFocused, isEmailValid, isPasswordFocused, isPasswordValid } = this.state
         
         if (auth.isWaiting) {
             return <Loading />
@@ -83,7 +117,7 @@ class SignInScreen extends React.Component {
 
         return (
             <Container style={styles.container}>
-                <Content contentContainerStyle={styles.content}>
+                <Content padder contentContainerStyle={styles.content}>
                     <View style={styles.title}>
                         <Title style={styles.text}>Faça seu login</Title>
                         <Image 
@@ -93,14 +127,15 @@ class SignInScreen extends React.Component {
                     <Form>
                         <View>
                             <Label style={styles.label}>E-mail ou usuário</Label> 
-                            <Item regular style={[styles.input, isEmailFocused ? styles.shadow : {}]}>
-                                <Input      
-                                    ref={(r) => { this.email = r }}                               
+                            <Item regular style={[styles.input, isEmailFocused ? styles.border : null, !isEmailValid ? styles.error : null]}>
+                                <Input                                                                                                         
                                     returnKeyType='next' 
-                                    onChangeText={(email) => this.setState({ user: { ...user, email }})} 
+                                    keyboardType={'email-address'}
+                                    onChangeText={(email) => this.validate(email, 'email')} 
+                                    onEndEditing={() => this.validate()}
                                     onFocus={this.handleEmailFocus} 
                                     onBlur={this.handleEmailFocus}                                   
-                                    value={user.email} />   
+                                    value={email} />   
                                 <Icon 
                                     reverse
                                     type="FontAwesome" 
@@ -110,15 +145,15 @@ class SignInScreen extends React.Component {
                         </View> 
                         <View>
                             <Label style={styles.label}>Senha</Label> 
-                            <Item regular style={[styles.input, isPasswordFocused ? styles.shadow : {}]}>
-                                <Input    
-                                    ref={(r) => { this.password = r }}                                   
+                            <Item regular style={[styles.input, isPasswordFocused ? styles.border : null, !isPasswordValid ? styles.error : null]}>
+                                <Input                                                                                                         
                                     returnKeyType='done' 
                                     secureTextEntry={true}
-                                    onChangeText={(password) => this.setState({ user: { ...user, password }})} 
+                                    onChangeText={(password) => this.validate(password, 'password')}                                     
+                                    onEndEditing={() => this.validate()}
                                     onFocus={this.handlePasswordFocus}
                                     onBlur={this.handlePasswordFocus}
-                                    value={user.password}/>  
+                                    value={password}/>  
                                 <Icon                                     
                                     name="eye-off"
                                     style={styles.icon} />                
@@ -149,10 +184,7 @@ function mapDispatchToProps(dispatch, ownProps) {
 }
 
 const styles = StyleSheet.create({
-    container: { 
-        
-        
-    },
+    container: { },
     content: {
         flex: 1,               
         justifyContent: 'center',
@@ -183,11 +215,15 @@ const styles = StyleSheet.create({
         height: 50,
         margin: 10
     },
-    shadow: {               
+    border: {               
         borderColor: '#733DBE',        
-        borderWidth: 2,
+        borderWidth: 3,
         borderRadius: 5,
-        opacity: 0.8,
+    }, 
+    error: {               
+        borderColor: 'red',        
+        borderWidth: 3,
+        borderRadius: 5,        
     },  
     sectionButton: {
         position:'absolute',
