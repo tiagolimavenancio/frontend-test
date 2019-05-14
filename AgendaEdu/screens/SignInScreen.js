@@ -19,7 +19,6 @@ import {
     Icon,
     Footer    
 } from 'native-base';
-import { Field, reduxForm } from 'redux-form'
 
 import { Actions } from 'react-native-router-flux';
 
@@ -55,7 +54,7 @@ class SignInScreen extends React.Component {
     async submit() {
         Keyboard.dismiss()  
         // if(Validates.isEmpty(this.state.email) || Validates.isEmpty(this.state.password))
-        //     return Alert.alert('Email and Password is required')  
+        //     return Alert.alert('Email e senha são obrigatórios')  
 
         // (this.state.isEmailValid && this.state.isPasswordValid)
         // ? await this.props.signIn(this.state.email, this.state.password, this.onSuccess, this.onError)

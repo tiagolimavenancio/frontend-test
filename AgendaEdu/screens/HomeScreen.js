@@ -18,14 +18,15 @@ import {
     List    
 } from 'native-base'
 
-import Colors from '../constants/Colors'
-import Validates from '../utils/Validates'
+import Colors from '../constants/Colors';
+import Moment from 'moment';
+import 'moment/locale/pt-br';
 
 const events = {
     "data": [
         {
             "id": 1,
-            "title": "Event 1",
+            "title": "Evento 1",
             "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pretium nulla non arcu aliquam rhoncus eu sed leo. Aenean cursus nibh sit amet fringilla sodales. Vestibulum faucibus venenatis tempor. Morbi placerat ac massa id ultricies.",
             "sendAt": "2019-03-07T00:34:35.327Z",
             "image": "https://s3-us-west-2.amazonaws.com/agendaedu-dev/schools/c5c1a933-cdef-4c9b-8a87-490f25c2538d/events/5380/attachments/1550866911-$1-original-poster-agendakids.jpeg",
@@ -34,20 +35,29 @@ const events = {
         },
         {
             "id": 2,
-            "title": "Event 2",
+            "title": "Evento 2",
             "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pretium nulla non arcu aliquam rhoncus eu sed leo. Aenean cursus nibh sit amet fringilla sodales. Vestibulum faucibus venenatis tempor. Morbi placerat ac massa id ultricies.",
-            "sendAt": "2019-03-087T00:34:35.327Z",
+            "sendAt": "2019-03-08T00:34:35.327Z",
             "image": "",
             "startAt": "2019-07-23T19:01:33.476Z",
             "location": "Fake Street, 1001 - Fortaleza CE"
-        },
+        }, 
         {
             "id": 3,
-            "title": "Event 3",
+            "title": "Evento 3",
             "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pretium nulla non arcu aliquam rhoncus eu sed leo. Aenean cursus nibh sit amet fringilla sodales. Vestibulum faucibus venenatis tempor. Morbi placerat ac massa id ultricies.",
-            "sendAt": "2019-03-097T00:34:35.327Z",
+            "sendAt": "2019-03-09T00:34:35.327Z",
             "image": "https://s3-us-west-2.amazonaws.com/agendaedu-dev/schools/c5c1a933-cdef-4c9b-8a87-490f25c2538d/events/5380/attachments/1550866911-$1-original-poster-agendakids.jpeg",
             "startAt": "2019-07-25T19:01:33.476Z",
+            "location": "Fake Street, 1001 - Fortaleza CE"
+        },
+        {
+            "id": 4,
+            "title": "Evento 4",
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pretium nulla non arcu aliquam rhoncus eu sed leo. Aenean cursus nibh sit amet fringilla sodales. Vestibulum faucibus venenatis tempor. Morbi placerat ac massa id ultricies.",
+            "sendAt": "2019-06-15T00:34:35.327Z",
+            "image": "",
+            "startAt": "2019-09-10T19:01:33.476Z",
             "location": "Fake Street, 1001 - Fortaleza CE"
         }
     ],
@@ -68,11 +78,13 @@ class HomeScreen extends React.Component {
         this.state = {
             isRefreshing: false
         }
+        Moment.locale('pt-BR');        
         this.onRefresh = this.onRefresh.bind(this)
     }
 
     componentDidMount() {
         this.onRefresh()
+        Moment.locale('pt-BR');
     }
 
     onRefresh() {        
@@ -96,10 +108,10 @@ class HomeScreen extends React.Component {
                                 <Text style={{ fontSize: 16 }} numberOfLines={1}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In congue dapibus lectus quis hendrerit. In luctus aliquam nibh, eu pellentesque erat lacinia sit amet.</Text>
                                 <View style={{ flexDirection: 'row' }}>
                                     <Icon name="time" style={{ fontSize: 16, marginRight: 5, color: Colors.iconDarkColor, alignSelf: 'center' }} />
-                                    <Text style={{ fontSize: 14, color: Colors.labelColor }}>16:00</Text>
+                                    <Text style={{ fontSize: 14, color: Colors.labelColor }}>{ Moment(row.sendAt).format('LT') }</Text>
                                 </View>
                             </View>
-                            <Text style={{ fontSize: 12, color: Colors.subtitleColor }} numberOfLines={1}>Quarta, 25 de Janeiro às 20:00h</Text>
+                            <Text style={{ fontSize: 12, color: Colors.subtitleColor }} numberOfLines={1}>{ Moment(row.startAt).format('llll') }</Text>
                         </View>
                     </Body>
                 </CardItem>                
