@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 30        
     },
     icon: {
-        color: Colors.iconColor,
+        color: Colors.iconLightColor,
         fontSize: 19               
     },
     image: {

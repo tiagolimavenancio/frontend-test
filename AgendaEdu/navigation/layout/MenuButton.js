@@ -17,7 +17,7 @@ export default class MenuButton extends React.Component {
     render() {
         return (
             <TouchableOpacity onPress={this.drawerOpen}>
-                <Icon type="FontAwesome" name='bars' size={18} style={{ marginHorizontal: 16, color: 'black' }} />
+                <Icon name='menu' style={{ marginHorizontal: 18, color: 'black' }} />
             </TouchableOpacity>
         )
     }

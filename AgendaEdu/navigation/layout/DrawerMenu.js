@@ -72,9 +72,9 @@ class DrawerMenu extends React.Component {
         return(
             <Container>
                 <Body style={styles.headerDrawer}>
-                    <Image style={ styles.avatar } source={require('../../assets/avatar/avatar_2.png')} />
-                    <Title style={ styles.title }>Nome</Title>
-                    <Subtitle style={ styles.subtitle }>Email</Subtitle>
+                    <Image style={ styles.avatar } source={require('../../assets/avatar/avatar_1.png')} />
+                    <Title style={ styles.title }>Nome do Estudante</Title>
+                    <Subtitle style={ styles.subtitle }>student@ae.com</Subtitle>
                 </Body>
                 <Content>
                     <List>
@@ -88,7 +88,7 @@ class DrawerMenu extends React.Component {
                                 <Text style={styles.logout}>Sair</Text>
                             </Body>
                             {
-                                (auth.waiting)
+                                (auth.isWaiting)
                                 ? <Spinner color='green' size='small' style={{ width: 20, height: 20}} />
                                 : null
                             }              

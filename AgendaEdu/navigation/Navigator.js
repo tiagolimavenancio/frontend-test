@@ -92,7 +92,7 @@ class Navigator extends React.Component {
                                     component={ DetailScreen } 
                                     navigationBarStyle={ Platform.OS == "ios" ? {} : styles.androidNavigationBarStyle }
                                     titleStyle={ Platform.OS == "ios" ? {} : styles.navTitleStyle }
-                                    title= 'Detail Screen' />
+                                    title= 'Detalhes do evento' />
                             </Stack>
                         </Stack>
                     </RouterWithRedux>
