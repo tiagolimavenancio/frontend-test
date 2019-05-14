@@ -1,24 +1,27 @@
-import React from 'react'
+import React from 'react';
 import { 
     View, 
     Platform, 
     StatusBar, 
     StyleSheet 
-} from 'react-native'
+} from 'react-native';
 import { 
     Router, 
     Stack, 
     Scene, 
-    Actions 
-} from 'react-native-router-flux'
-import { connect, Provider } from 'react-redux'
-import Store, { configureStore } from '../redux/store'
+    Actions, 
+    Drawer
+} from 'react-native-router-flux';
+import { connect, Provider } from 'react-redux';
+import Store, { configureStore } from '../redux/store';
 
-import ReduxActions from '../redux/actions'
+import ReduxActions from '../redux/actions';
 
-import Colors from '../constants/Colors'
-import Loading from '../components/Loading'
+import Colors from '../constants/Colors';
+import Loading from '../components/Loading';
 
+import DrawerMenu from './layout/DrawerMenu';
+import MenuButton from './layout/MenuButton';
 import SignInScreen from '../screens/SignInScreen'
 import HomeScreen from '../screens/HomeScreen'
 import DetailScreen from '../screens/DetailScreen'
@@ -69,13 +72,21 @@ class Navigator extends React.Component {
                                     key='sign_in'
                                     component={ SignInScreen } />
                             </Stack>
-                            <Stack key='authorized' type='replace' initial={this.state.isLogged}>
-                                <Scene 
-                                    key='home'
-                                    component={ HomeScreen } 
-                                    navigationBarStyle={ Platform.OS == "ios" ? {} : styles.androidNavigationBarStyle }
-                                    titleStyle={ Platform.OS == "ios" ? {} : styles.navTitleStyle }
-                                    title= 'Home Screen'/>
+                            <Stack key='authorized' type='replace' initial={this.state.isLogged} hideNavBar>
+                                <Drawer
+                                    key='drawer'
+                                    contentComponent={ DrawerMenu }
+                                    navigationBarStyle={ Platform.OS == 'ios' ? {} : styles.androidNavigationBarStyle }
+                                    drawerOpenRoute='DrawerOpen'
+                                    drawerCloseRoute='DrawerClose'
+                                    drawerToggleRoute='DrawerToggle'
+                                    renderLeftButton={ () => <MenuButton /> } >
+                                  <Scene 
+                                        key='home'
+                                        component={ HomeScreen }                                         
+                                        titleStyle={ Platform.OS == "ios" ? {} : styles.navTitleStyle }
+                                        title= 'Eventos' />
+                                </Drawer>
                                 <Scene
                                     key='detail'
                                     component={ DetailScreen } 
@@ -97,8 +108,7 @@ const styles = StyleSheet.create({
     },
     androidNavigationBarStyle: {
         backgroundColor: Colors.primaryColor,
-        paddingTop: 24,
-        height: 80
+        paddingTop: 24,        
     },
     navTitleStyle: {
         color: 'black'

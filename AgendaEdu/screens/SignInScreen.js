@@ -26,24 +26,11 @@ import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
+import Colors from '../constants/Colors';
+
 import ReduxActions from '../redux/actions';
 import Loading from '../components/Loading';
 import Validates from '../utils/Validates';
-
-// const validate = values => {
-//     const errors = {}
-//     errors.email = !values.email 
-//     ? 'Email is required' 
-//     : !Validates.validateEmail(values.email)
-//     ? 'Email format is invalid'
-//     : undefined;
-//     errors.password = !values.password 
-//     ? 'Password is required' 
-//     : Validates.validatePassword(values.password)
-//     ? 'Password must be at least 6 characters long'
-//     : undefined;
-//     return errors;
-// }
 
 class SignInScreen extends React.Component {
 
@@ -67,12 +54,13 @@ class SignInScreen extends React.Component {
 
     async submit() {
         Keyboard.dismiss()  
-        if(Validates.isEmpty(this.state.email) || Validates.isEmpty(this.state.password))
-            return Alert.alert('Email and Password is required')  
+        // if(Validates.isEmpty(this.state.email) || Validates.isEmpty(this.state.password))
+        //     return Alert.alert('Email and Password is required')  
 
-        (this.state.isEmailValid && this.state.isPasswordValid)
-        ? await this.props.signIn(this.state.email, this.state.password, this.onSuccess, this.onError)
-        : Alert.alert('Invalid Email or Password')           
+        // (this.state.isEmailValid && this.state.isPasswordValid)
+        // ? await this.props.signIn(this.state.email, this.state.password, this.onSuccess, this.onError)
+        // : Alert.alert('Invalid Email or Password')
+        this.onSuccess() 
     }
 
     onSuccess() {        
@@ -136,8 +124,7 @@ class SignInScreen extends React.Component {
                                     onFocus={this.handleEmailFocus} 
                                     onBlur={this.handleEmailFocus}                                   
                                     value={email} />   
-                                <Icon 
-                                    reverse
+                                <Icon                                     
                                     type="FontAwesome" 
                                     name="envelope-o" 
                                     style={styles.icon} />                            
@@ -209,19 +196,19 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        borderColor: '#ABB1B7',
+        borderColor: Colors.borderColor,
         borderRadius: 5,
         borderWidth: 2,
         height: 50,
         margin: 10
     },
     border: {               
-        borderColor: '#733DBE',        
+        borderColor: Colors.accentColor,        
         borderWidth: 3,
         borderRadius: 5,
     }, 
     error: {               
-        borderColor: 'red',        
+        borderColor: Colors.errorColor,        
         borderWidth: 3,
         borderRadius: 5,        
     },  
@@ -232,12 +219,12 @@ const styles = StyleSheet.create({
         right: 0
     },
     btn: {                        
-        backgroundColor: '#733DBE',   
+        backgroundColor: Colors.accentColor,   
         borderRadius: 5,
         marginHorizontal: 30        
     },
     icon: {
-        color: '#AAAAAA',
+        color: Colors.iconColor,
         fontSize: 19               
     },
     image: {
