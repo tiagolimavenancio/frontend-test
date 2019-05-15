@@ -8,7 +8,7 @@ class DetailScreen extends React.Component {
     render() {
         return(
             <Container>
-                <Title>Detail Screen</Title>
+                <Title>Detalhes do Evento</Title>
             </Container>
         )
     }

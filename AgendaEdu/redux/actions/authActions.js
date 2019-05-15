@@ -19,24 +19,6 @@ export function signIn(email, password, signInSuccess, signInFail) {
     }
 }
 
-export function signOut(signOutSuccess, signOutFail) {
-    return (dispatch) => {
-        dispatch(waiting())
-        Auth.signOut((success, data, error) => {
-            if (success) {
-                dispatch({
-                    type: Types.SIGNED_OUT
-                })
-                signOutSuccess()
-            } else {
-                signOutFail(error)
-            }
-            dispatch(done())
-        })
-        
-    }
-}
-
 export function checkSessionStatus(callback) {
     return (dispatch) => {        
         Session.Credential.get('@Token:user').then((response) => {
@@ -51,6 +33,22 @@ export function checkSessionStatus(callback) {
                 callback(false)
             }
         })
+    }
+}
+
+export function signOut(signOutSuccess, signOutFail) {
+    return (dispatch) => {
+        dispatch(waiting())
+        Auth.signOut((success, data, error) => {
+            if (success) {
+                dispatch({ type: Types.SIGNED_OUT })
+                dispatch(done())
+                signOutSuccess()                
+            } else {
+                signOutFail(error)
+                dispatch(done())
+            }            
+        })        
     }
 }
 

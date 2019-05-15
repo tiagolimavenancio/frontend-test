@@ -1,7 +1,7 @@
 import Http from './Http'
 import Session from './Session'
 
-export default function signIn(email, password, callback) {
+export function signIn(email, password, callback) {
     Http.post('/login', {
         email,
         password,
@@ -12,7 +12,7 @@ export default function signIn(email, password, callback) {
     .catch((error) => callback(false, null, error))
 }
 
-export default function signOut(callback) {
+export function signOut(callback) {
     Session.Credential.destroy('@Token:user')
     .then(() => callback(true, null, null))
     .catch((error) => callback(false, null, error))

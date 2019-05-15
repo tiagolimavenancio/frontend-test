@@ -39,7 +39,7 @@ class Notice extends React.PureComponent {
         if(!this.state.isConnected) {
             return (
                 <View style={styles.container}>
-                    <Text style={styles.text}>No Internet Connection</Text>
+                    <Text style={styles.text}>Sem conexão com a Internet</Text>
                 </View>
             )
         }
