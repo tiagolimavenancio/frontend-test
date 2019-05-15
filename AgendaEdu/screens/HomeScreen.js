@@ -106,11 +106,11 @@ class HomeScreen extends React.Component {
         const rowIds = [];
 
         for(let i = 0; i < data.length; i++) {
-            const currentStartAt = data[i].startAt
+            const currentStartAt = data[i].startAt            
             const objs = data.filter((obj) => obj.startAt.indexOf(currentStartAt) === 0)
             if(objs.length > 0) {
                 sectionIds.push(i)
-                dataBlob[i] = { startAt: currentStartAt }
+                dataBlob[i] = { startAt: currentStartAt }                
                 rowIds.push([])
                 for(let j = 0; j < objs.length; j++) {
                     const rowId = `${i}:${j}`
@@ -119,7 +119,7 @@ class HomeScreen extends React.Component {
                 }
             }
         }
-                
+         
         return { dataBlob, sectionIds, rowIds }
     }
 
