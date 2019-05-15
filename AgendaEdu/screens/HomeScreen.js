@@ -3,7 +3,10 @@ import {
     View,
     RefreshControl,    
     Image,
-    StyleSheet
+    StyleSheet,
+    ListView,
+    FlatList,
+    SectionList
 } from 'react-native'
 import {
     Container,
@@ -11,13 +14,12 @@ import {
     Card,
     CardItem,    
     Body,
-    Left,
-    Title,
     Text,    
     Icon,
-    List    
+    List,    
+    ListItem,
+    Separator
 } from 'native-base'
-
 import Colors from '../constants/Colors';
 import Moment from 'moment';
 import 'moment/locale/pt-br';
@@ -74,17 +76,51 @@ const events = {
 class HomeScreen extends React.Component {
     
     constructor(props){
-        super(props)
+        super(props);
+        const getSectionData = (dataBlob, sectionId) => dataBlob[sectionId];
+        const getRowData = (dataBlob, sectionId, rowId) => dataBlob[`${rowId}`];
+        const ds = new ListView.DataSource({
+                rowHasChanged: (r1, r2) => r1 !== r2,
+                sectionHeaderHasChanged: (s1, s2) => s1 !== s2,
+                getSectionData,
+                getRowData,
+        });        
+        const { dataBlob, sectionIds, rowIds } = this.renderData(); 
         this.state = {
-            isRefreshing: false
+            isRefreshing: false,
+            dataSource: ds.cloneWithRowsAndSections(dataBlob, sectionIds, rowIds)         
         }
-        Moment.locale('pt-BR');        
+        Moment.locale('pt-BR');  
         this.onRefresh = this.onRefresh.bind(this)
+        this.onLoad = this.onLoad.bind(this)
     }
 
     componentDidMount() {
-        this.onRefresh()
-        Moment.locale('pt-BR');
+        this.onRefresh()        
+    }
+
+    renderData() {
+        const data = events.data;
+        const sectionIds = [];
+        const dataBlob = {};        
+        const rowIds = [];
+
+        for(let i = 0; i < data.length; i++) {
+            const currentStartAt = data[i].startAt
+            const objs = data.filter((obj) => obj.startAt.indexOf(currentStartAt) === 0)
+            if(objs.length > 0) {
+                sectionIds.push(i)
+                dataBlob[i] = { startAt: currentStartAt }
+                rowIds.push([])
+                for(let j = 0; j < objs.length; j++) {
+                    const rowId = `${i}:${j}`
+                    rowIds[rowIds.length - 1].push(rowId)
+                    dataBlob[rowId] = objs[j]
+                }
+            }
+        }
+                
+        return { dataBlob, sectionIds, rowIds }
     }
 
     onRefresh() {        
@@ -92,40 +128,58 @@ class HomeScreen extends React.Component {
         setTimeout(() => {this.setState({ isRefreshing: false })}, 3000)
     }
 
-    renderCards(row) {
-        return(
-            <Card style={styles.card}>                
-                <CardItem style={styles.cardItem}>                    
-                    <Body style={styles.body}>
-                        { 
-                            row.image 
-                            ? ( <View><Image source={{ uri: row.image }} style={ styles.image } /></View> )
-                            : null 
-                        }                        
-                        <View style={{ flex: 1, margin: 8, alignItems: 'stretch' }}>
-                            <Text style={{ fontSize: 12, color: Colors.subtitleColor }}>EVENTOS</Text>
-                            <View style={{ flex: 1, justifyContent: 'center' }}>
-                                <Text style={{ fontSize: 16 }} numberOfLines={1}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In congue dapibus lectus quis hendrerit. In luctus aliquam nibh, eu pellentesque erat lacinia sit amet.</Text>
-                                <View style={{ flexDirection: 'row' }}>
-                                    <Icon name="time" style={{ fontSize: 16, marginRight: 5, color: Colors.iconDarkColor, alignSelf: 'center' }} />
-                                    <Text style={{ fontSize: 14, color: Colors.labelColor }}>{ Moment(row.sendAt).format('LT') }</Text>
-                                </View>
-                            </View>
-                            <Text style={{ fontSize: 12, color: Colors.subtitleColor }} numberOfLines={1}>{ Moment(row.startAt).format('llll') }</Text>
-                        </View>
-                    </Body>
-                </CardItem>                
-            </Card>
+    onLoad() {
+
+    }
+
+    renderSectionHeader(sectionData) {               
+        return (
+            <ListItem noBorder style={{ marginLeft: 0, paddingLeft: 0 }}>
+                <Text style={{ fontSize: 14, color: Colors.labelColor }}>
+                    { Moment(sectionData.startAt).format('dddd, DD [de] MMMM') }
+                </Text>
+            </ListItem>
+   
         )
     }
 
-    render() {
+    renderCards(row) {                          
+        return (
+            <Card style={styles.card}>                
+                    <CardItem style={styles.cardItem}>                    
+                        <Body style={styles.body}>
+                            { 
+                                row.image 
+                                ? ( <View><Image source={{ uri: row.image }} style={ styles.image } /></View> )
+                                : null 
+                            }                        
+                            <View style={{ flex: 1, margin: 8, alignItems: 'stretch' }}>
+                                <Text style={{ fontSize: 12, color: Colors.subtitleColor }}>EVENTOS</Text>
+                                <View style={{ flex: 1, justifyContent: 'center' }}>
+                                    <Text style={{ fontSize: 16 }} numberOfLines={1}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In congue dapibus lectus quis hendrerit. In luctus aliquam nibh, eu pellentesque erat lacinia sit amet.</Text>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <Icon name="time" style={{ fontSize: 16, marginRight: 5, color: Colors.iconDarkColor, alignSelf: 'center' }} />
+                                        <Text style={{ fontSize: 14, color: Colors.labelColor }}>{ Moment(row.sendAt).format('LT') }</Text>
+                                    </View>
+                                </View>
+                                <Text style={{ fontSize: 12, color: Colors.subtitleColor }} numberOfLines={1}>{ Moment(row.startAt).format("dddd, DD [de] MMMM [às] HH:mm") }</Text>
+                            </View>
+                        </Body>
+                    </CardItem>                
+                </Card>
+        )
+    }
+
+    render() {      
         return(
             <Container>
                 <Content 
                     contentContainerStyle={{ padding: 10 }} 
                     refreshControl={ <RefreshControl refreshing={this.state.isRefreshing} onRefresh={this.onRefresh} /> } >
-                    <List dataArray={events.data} renderRow={ this.renderCards } />
+                    <ListView
+                        dataSource={this.state.dataSource} 
+                        renderRow={this.renderCards} 
+                        renderSectionHeader={this.renderSectionHeader} />
                 </Content>
             </Container>
         )
