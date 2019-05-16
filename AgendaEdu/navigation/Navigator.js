@@ -89,10 +89,11 @@ class Navigator extends React.Component {
                                 </Drawer>
                                 <Scene
                                     key='detail'
-                                    component={ DetailScreen } 
-                                    navigationBarStyle={ Platform.OS == "ios" ? {} : styles.androidNavigationBarStyle }
+                                    component={ DetailScreen }                                     
                                     titleStyle={ Platform.OS == "ios" ? {} : styles.navTitleStyle }
-                                    title= 'Detalhes do evento' />
+                                    title= 'Detalhes do evento'
+                                    tintColor='black'
+                                    hideNavBar={false} />
                             </Stack>
                         </Stack>
                     </RouterWithRedux>

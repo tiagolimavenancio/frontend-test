@@ -118,6 +118,7 @@ class SignInScreen extends React.Component {
                                 <Input                                                                                                         
                                     returnKeyType='next' 
                                     keyboardType={'email-address'}
+                                    autoCapitalize = 'none'
                                     onChangeText={(email) => this.validate(email, 'email')} 
                                     onEndEditing={() => this.validate()}
                                     onFocus={this.handleEmailFocus} 
@@ -148,7 +149,7 @@ class SignInScreen extends React.Component {
                     </Form>   
                     <View style={styles.sectionButton}>
                         <Button block style={styles.btn} onPress={this.submit}>
-                            <Text>Entrar</Text>
+                            <Text uppercase={false} style={styles.titleBtn}>Entrar</Text>
                         </Button>
                     </View>  
                 </Content>
@@ -185,11 +186,13 @@ const styles = StyleSheet.create({
     }, 
     text: {
         fontSize: 25, 
-        marginRight: 8
+        marginRight: 8,
+        fontWeight: 'bold'
     }, 
     label: {
         color: '#666666',
-        fontSize: 14
+        fontSize: 14,
+        fontWeight: '400'
     },
     input: {
         flexDirection: 'row',
@@ -220,7 +223,11 @@ const styles = StyleSheet.create({
     btn: {                        
         backgroundColor: Colors.accentColor,   
         borderRadius: 5,
-        marginHorizontal: 30        
+        marginHorizontal: 30                
+    },
+    titleBtn: {
+        fontSize: 16, 
+        fontWeight: '600',        
     },
     icon: {
         color: Colors.iconLightColor,
