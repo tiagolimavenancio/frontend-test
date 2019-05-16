@@ -4,9 +4,7 @@ import {
     RefreshControl,    
     Image,
     StyleSheet,
-    ListView,
-    FlatList,
-    SectionList
+    ListView    
 } from 'react-native'
 import {
     Container,
@@ -15,63 +13,19 @@ import {
     CardItem,    
     Body,
     Text,    
-    Icon,
-    List,    
-    ListItem,
-    Separator
+    Icon,    
+    ListItem    
 } from 'native-base'
-import Colors from '../constants/Colors';
-import Moment from 'moment';
-import 'moment/locale/pt-br';
+import { Actions } from 'react-native-router-flux'
+import Moment from 'moment'
+import 'moment/locale/pt-br'
 
-const events = {
-    "data": [
-        {
-            "id": 1,
-            "title": "Evento 1",
-            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pretium nulla non arcu aliquam rhoncus eu sed leo. Aenean cursus nibh sit amet fringilla sodales. Vestibulum faucibus venenatis tempor. Morbi placerat ac massa id ultricies.",
-            "sendAt": "2019-03-07T00:34:35.327Z",
-            "image": "https://s3-us-west-2.amazonaws.com/agendaedu-dev/schools/c5c1a933-cdef-4c9b-8a87-490f25c2538d/events/5380/attachments/1550866911-$1-original-poster-agendakids.jpeg",
-            "startAt": "2019-07-22T19:01:33.476Z",
-            "location": "Fake Street, 1001 - Fortaleza CE"
-        },
-        {
-            "id": 2,
-            "title": "Evento 2",
-            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pretium nulla non arcu aliquam rhoncus eu sed leo. Aenean cursus nibh sit amet fringilla sodales. Vestibulum faucibus venenatis tempor. Morbi placerat ac massa id ultricies.",
-            "sendAt": "2019-03-08T00:34:35.327Z",
-            "image": "",
-            "startAt": "2019-07-23T19:01:33.476Z",
-            "location": "Fake Street, 1001 - Fortaleza CE"
-        }, 
-        {
-            "id": 3,
-            "title": "Evento 3",
-            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pretium nulla non arcu aliquam rhoncus eu sed leo. Aenean cursus nibh sit amet fringilla sodales. Vestibulum faucibus venenatis tempor. Morbi placerat ac massa id ultricies.",
-            "sendAt": "2019-03-09T00:34:35.327Z",
-            "image": "https://s3-us-west-2.amazonaws.com/agendaedu-dev/schools/c5c1a933-cdef-4c9b-8a87-490f25c2538d/events/5380/attachments/1550866911-$1-original-poster-agendakids.jpeg",
-            "startAt": "2019-07-25T19:01:33.476Z",
-            "location": "Fake Street, 1001 - Fortaleza CE"
-        },
-        {
-            "id": 4,
-            "title": "Evento 4",
-            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pretium nulla non arcu aliquam rhoncus eu sed leo. Aenean cursus nibh sit amet fringilla sodales. Vestibulum faucibus venenatis tempor. Morbi placerat ac massa id ultricies.",
-            "sendAt": "2019-06-15T00:34:35.327Z",
-            "image": "",
-            "startAt": "2019-09-10T19:01:33.476Z",
-            "location": "Fake Street, 1001 - Fortaleza CE"
-        }
-    ],
-    "metadata": {
-        "page": 1,
-        "limit": 2,
-        "pre_page": null,
-        "next_page": 2,
-        "total": 100,
-        "total_pages": 50
-    }
-}
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import ReduxActions from '../redux/actions'
+
+import Colors from '../constants/Colors'
+import events from '../sample.json'
 
 class HomeScreen extends React.Component {
     
@@ -92,11 +46,20 @@ class HomeScreen extends React.Component {
         }
         Moment.locale('pt-BR');  
         this.onRefresh = this.onRefresh.bind(this)
-        this.onLoad = this.onLoad.bind(this)
+        this.onLoad = this.onLoad.bind(this)              
     }
 
     componentDidMount() {
         this.onRefresh()        
+    }
+
+    onRefresh() {        
+        this.setState({ isRefreshing: true })
+        setTimeout(() => {this.setState({ isRefreshing: false })}, 3000)
+    }
+
+    onLoad() {
+
     }
 
     renderData() {
@@ -106,8 +69,8 @@ class HomeScreen extends React.Component {
         const rowIds = [];
 
         for(let i = 0; i < data.length; i++) {
-            const currentStartAt = data[i].startAt            
-            const objs = data.filter((obj) => obj.startAt.indexOf(currentStartAt) === 0)
+            const currentStartAt = data[i].startAt                    
+            const objs = data.filter((obj) => obj.startAt.indexOf(currentStartAt) === 0) 
             if(objs.length > 0) {
                 sectionIds.push(i)
                 dataBlob[i] = { startAt: currentStartAt }                
@@ -123,19 +86,10 @@ class HomeScreen extends React.Component {
         return { dataBlob, sectionIds, rowIds }
     }
 
-    onRefresh() {        
-        this.setState({ isRefreshing: true })
-        setTimeout(() => {this.setState({ isRefreshing: false })}, 3000)
-    }
-
-    onLoad() {
-
-    }
-
     renderSectionHeader(sectionData) {               
         return (
             <ListItem noBorder style={{ marginLeft: 0, paddingLeft: 0 }}>
-                <Text style={{ fontSize: 14, color: Colors.labelColor }}>
+                <Text style={ styles.sectionDate }>
                     { Moment(sectionData.startAt).format('dddd, DD [de] MMMM') }
                 </Text>
             </ListItem>
@@ -144,37 +98,36 @@ class HomeScreen extends React.Component {
     }
 
     renderCards(row) {                          
-        return (
-            <Card style={styles.card}>                
-                    <CardItem style={styles.cardItem}>                    
-                        <Body style={styles.body}>
-                            { 
-                                row.image 
-                                ? ( <View><Image source={{ uri: row.image }} style={ styles.image } /></View> )
-                                : null 
-                            }                        
-                            <View style={{ flex: 1, margin: 8, alignItems: 'stretch' }}>
-                                <Text style={{ fontSize: 12, color: Colors.subtitleColor }}>EVENTOS</Text>
-                                <View style={{ flex: 1, justifyContent: 'center' }}>
-                                    <Text style={{ fontSize: 16 }} numberOfLines={1}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In congue dapibus lectus quis hendrerit. In luctus aliquam nibh, eu pellentesque erat lacinia sit amet.</Text>
-                                    <View style={{ flexDirection: 'row' }}>
-                                        <Icon name="time" style={{ fontSize: 16, marginRight: 5, color: Colors.iconDarkColor, alignSelf: 'center' }} />
-                                        <Text style={{ fontSize: 14, color: Colors.labelColor }}>{ Moment(row.sendAt).format('LT') }</Text>
-                                    </View>
+        return (            
+            <Card key={row.id} style={styles.card}>                
+                <CardItem style={styles.cardItem} button onPress={() => Actions.detail({ title: row.title, event: row })}>                    
+                    <Body style={styles.body}>
+                        { 
+                            row.image 
+                            ? ( <View><Image source={{ uri: row.image }} style={ styles.image } /></View> )
+                            : null 
+                        }                        
+                        <View style={styles.content}>
+                            <Text style={styles.text}>EVENTOS</Text>
+                            <View style={{ flex: 1, justifyContent: 'center' }}>
+                                <Text style={styles.name} numberOfLines={1}>{row.title}</Text>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <Icon name="time" style={styles.icon} />
+                                    <Text style={styles.time}>{ Moment(row.startAt).format('LT') }</Text>
                                 </View>
-                                <Text style={{ fontSize: 12, color: Colors.subtitleColor }} numberOfLines={1}>{ Moment(row.startAt).format("dddd, DD [de] MMMM [às] HH:mm") }</Text>
                             </View>
-                        </Body>
-                    </CardItem>                
-                </Card>
+                            <Text style={styles.text} numberOfLines={1}>{ Moment(row.startAt).format("dddd, DD [de] MMMM [às] HH:mm") }</Text>
+                        </View>
+                    </Body>
+                </CardItem>                
+            </Card>            
         )
     }
 
     render() {      
         return(
             <Container>
-                <Content 
-                    contentContainerStyle={{ padding: 10 }} 
+                <Content contentContainerStyle={{ padding: 10 }} 
                     refreshControl={ <RefreshControl refreshing={this.state.isRefreshing} onRefresh={this.onRefresh} /> } >
                     <ListView
                         dataSource={this.state.dataSource} 
@@ -185,6 +138,20 @@ class HomeScreen extends React.Component {
         )
     }
 } 
+
+function mapStateToProps(state) {
+    return {
+        state: {
+            events: state.events
+        }
+    }
+}
+
+function mapDispatchToProps(dispatch, ownProps) {
+    return {
+        actions: bindActionCreators(ReduxActions.EventsActions, dispatch)
+    }
+}
 
 const styles = StyleSheet.create({
     card: {
@@ -214,7 +181,37 @@ const styles = StyleSheet.create({
         width: 82,         
         height: 66,
         resizeMode: 'cover'
-    }
+    },
+    content: {
+        flex: 1, 
+        margin: 8, 
+        alignItems: 'stretch'
+    },
+    sectionDate: {
+        fontSize: 14, 
+        fontWeight: '400',
+        color: Colors.labelColor
+    },
+    text: {
+        fontSize: 12, 
+        fontWeight: '400', 
+        color: Colors.subtitleColor
+    },
+    name: {
+        fontSize: 16, 
+        fontWeight: '500'
+    },
+    icon: {
+        fontSize: 16, 
+        marginRight: 5, 
+        color: Colors.iconDarkColor, 
+        alignSelf: 'center'
+    },
+    time: {
+        fontSize: 14, 
+        fontWeight: '400', 
+        color: Colors.labelColor
+    }    
   })
 
-export default HomeScreen;
+export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);

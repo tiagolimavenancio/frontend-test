@@ -2,50 +2,52 @@ import Types from '../types/authTypes'
 import Auth from '../../services/Auth'
 import Session from '../../services/Session'
 
-export function signIn(email, password, signInSuccess, signInFail) {
+export function requestSign(email, password, callback, fail) {    
     return (dispatch) => {
-        dispatch(waiting())               
+        dispatch(waiting())                      
         Auth.signIn(email, password, (success, data, error) => {            
             if(success) {                
-                if(data.exists) {
-                    dispatch({ type: Types.SIGNED_IN, data })
-                    signInSuccess(data)
-                }                
-            }else {                
-                signInFail(error)
-            }
-            dispatch(done())
+                dispatch({ type: Types.SIGNED_IN, data })
+                dispatch(done()) 
+                callback(data)                
+            }else {  
+                dispatch(done())              
+                fail(error)
+            }            
         })                  
     }
 }
 
 export function checkSessionStatus(callback) {
-    return (dispatch) => {        
+    return (dispatch) => {   
+        dispatch(waiting())     
         Session.Credential.get('@Token:user').then((response) => {
             if(response) {                
                 dispatch({
                     type: Types.SIGNED_IN,
                     data: response
                 })
+                dispatch(done())
                 callback(true)
             }else {
                 dispatch({ type: Types.SIGNED_OUT })
+                dispatch(done())
                 callback(false)
             }
         })
     }
 }
 
-export function signOut(signOutSuccess, signOutFail) {
+export function requestSignOut(callback, fail) {
     return (dispatch) => {
         dispatch(waiting())
-        Auth.signOut((success, data, error) => {
+        Auth.signOut((success, error) => {
             if (success) {
                 dispatch({ type: Types.SIGNED_OUT })
                 dispatch(done())
-                signOutSuccess()                
+                callback()                
             } else {
-                signOutFail(error)
+                callback(error)
                 dispatch(done())
             }            
         })        

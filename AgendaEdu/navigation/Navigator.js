@@ -43,7 +43,7 @@ class Navigator extends React.Component {
     }
 
     componentDidMount() {
-        Store.instance.dispatch(ReduxActions.authActions.checkSessionStatus((isLogged) => {
+        Store.instance.dispatch(ReduxActions.AuthActions.checkSessionStatus((isLogged) => {
             this.setState({ isReady: true, isLogged })
         }))
     }
@@ -89,10 +89,11 @@ class Navigator extends React.Component {
                                 </Drawer>
                                 <Scene
                                     key='detail'
-                                    component={ DetailScreen } 
-                                    navigationBarStyle={ Platform.OS == "ios" ? {} : styles.androidNavigationBarStyle }
+                                    component={ DetailScreen }                                     
                                     titleStyle={ Platform.OS == "ios" ? {} : styles.navTitleStyle }
-                                    title= 'Detalhes do evento' />
+                                    title= 'Detalhes do evento'
+                                    tintColor='black'
+                                    hideNavBar={false} />
                             </Stack>
                         </Stack>
                     </RouterWithRedux>

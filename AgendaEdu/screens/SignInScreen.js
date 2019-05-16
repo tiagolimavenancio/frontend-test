@@ -1,11 +1,11 @@
-import React from 'react';
+import React from 'react'
 import {
     View,
     Keyboard,
     StyleSheet,
     Alert,
     Image
-} from 'react-native';
+} from 'react-native'
 import {
     Container,
     Content,
@@ -18,18 +18,14 @@ import {
     Item,
     Icon,
     Footer    
-} from 'native-base';
-
-import { Actions } from 'react-native-router-flux';
-
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-
-import Colors from '../constants/Colors';
-
-import ReduxActions from '../redux/actions';
-import Loading from '../components/Loading';
-import Validates from '../utils/Validates';
+} from 'native-base'
+import { Actions } from 'react-native-router-flux'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import Colors from '../constants/Colors'
+import ReduxActions from '../redux/actions'
+import Loading from '../components/Loading'
+import Validates from '../utils/Validates'
 
 class SignInScreen extends React.Component {
 
@@ -43,7 +39,6 @@ class SignInScreen extends React.Component {
             isPasswordFocused: false,
             isPasswordValid: true    
         }
-
         this.submit = this.submit.bind(this)
         this.onSuccess = this.onSuccess.bind(this)
         this.onError = this.onError.bind(this)  
@@ -52,22 +47,21 @@ class SignInScreen extends React.Component {
     }
 
     async submit() {
-        Keyboard.dismiss()  
-        // if(Validates.isEmpty(this.state.email) || Validates.isEmpty(this.state.password))
-        //     return Alert.alert('Email e senha são obrigatórios')  
-
-        // (this.state.isEmailValid && this.state.isPasswordValid)
-        // ? await this.props.signIn(this.state.email, this.state.password, this.onSuccess, this.onError)
-        // : Alert.alert('Invalid Email or Password')
-        this.onSuccess() 
+        Keyboard.dismiss()        
+        if(Validates.isEmpty(this.state.email) || Validates.isEmpty(this.state.password))
+            return Alert.alert('Email e senha são obrigatórios')
+        
+        if(this.state.isEmailValid && this.state.isPasswordValid)             
+            await this.props.requestSign(this.state.email, this.state.password, this.onSuccess, this.onError) 
     }
 
-    onSuccess() {        
-        setTimeout(() => { Actions.authorized({ type: 'reset' }) }, 500)
+    onSuccess(data) {
+        console.log("Signed In With Success: ", data)       
+        setTimeout(() => { Actions.authorized({ type: 'reset' }), 500 })        
     }
 
-    onError(error) {
-        Alert.alert('Oops!', error.message)
+    onError(error) {        
+        Alert.alert('Oops!', error.response.data.message)
     }
 
     handleEmailFocus() {                      
@@ -118,6 +112,7 @@ class SignInScreen extends React.Component {
                                 <Input                                                                                                         
                                     returnKeyType='next' 
                                     keyboardType={'email-address'}
+                                    autoCapitalize = 'none'
                                     onChangeText={(email) => this.validate(email, 'email')} 
                                     onEndEditing={() => this.validate()}
                                     onFocus={this.handleEmailFocus} 
@@ -148,7 +143,7 @@ class SignInScreen extends React.Component {
                     </Form>   
                     <View style={styles.sectionButton}>
                         <Button block style={styles.btn} onPress={this.submit}>
-                            <Text>Entrar</Text>
+                            <Text uppercase={false} style={styles.titleBtn}>Entrar</Text>
                         </Button>
                     </View>  
                 </Content>
@@ -166,7 +161,7 @@ function mapStateToProps(state){
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
-    return bindActionCreators(ReduxActions.authActions, dispatch);
+    return bindActionCreators(ReduxActions.AuthActions, dispatch)
 }
 
 const styles = StyleSheet.create({
@@ -185,11 +180,13 @@ const styles = StyleSheet.create({
     }, 
     text: {
         fontSize: 25, 
-        marginRight: 8
+        marginRight: 8,
+        fontWeight: 'bold'
     }, 
     label: {
         color: '#666666',
-        fontSize: 14
+        fontSize: 14,
+        fontWeight: '400'
     },
     input: {
         flexDirection: 'row',
@@ -220,7 +217,11 @@ const styles = StyleSheet.create({
     btn: {                        
         backgroundColor: Colors.accentColor,   
         borderRadius: 5,
-        marginHorizontal: 30        
+        marginHorizontal: 30                
+    },
+    titleBtn: {
+        fontSize: 16, 
+        fontWeight: '600',        
     },
     icon: {
         color: Colors.iconLightColor,

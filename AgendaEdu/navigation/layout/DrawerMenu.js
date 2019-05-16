@@ -14,7 +14,7 @@ import {
     Text,
     Title,
     Subtitle,
-    Spinnet
+    Spinner
 } from 'native-base'
 import { Actions } from 'react-native-router-flux'
 
@@ -42,9 +42,8 @@ class DrawerMenu extends React.Component {
         return this.props.activeItemKey == key ? styles.listItemActiveText : styles.listItemText
     }
 
-    onSignOut() {
-        console.log('PROPS: ' + JSON.stringify(this.props))
-        // setTimeout(() => { this.props.signOut(this.onSuccess, this.onError) }, 1000)
+    onSignOut() {        
+        setTimeout(() => { this.props.requestSignOut(this.onSuccess, this.onError) }, 500)
     }
 
     onSuccess() {
@@ -89,7 +88,7 @@ class DrawerMenu extends React.Component {
                             </Body>
                             {
                                 (auth.isWaiting)
-                                ? <Spinner color='green' size='small' style={{ width: 20, height: 20}} />
+                                ? <Spinner color={ Colors.accentColor } size='small' style={{ width: 20, height: 20}} />
                                 : null
                             }              
                         </ListItem>
@@ -109,7 +108,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
-    return bindActionCreators(ReduxActions.authActions, dispatch)
+    return  bindActionCreators(ReduxActions.AuthActions, dispatch)    
 }
 
 const styles = StyleSheet.create({
@@ -131,10 +130,10 @@ const styles = StyleSheet.create({
       backgroundColor: 'rgba(153, 153, 153, 0.1)',
     },
     listItemText:{
-      fontWeight: '800',
+      fontWeight: '600',
     },
     listItemActiveText:{
-      fontWeight: '800',
+      fontWeight: '600',
       color: Colors.accentColor
     },
     avatar: {
@@ -145,15 +144,16 @@ const styles = StyleSheet.create({
     title: {
       marginHorizontal: 5,
       fontSize: 20,
-      color: Colors.accentColor
+      color: Colors.accentColor,
+      fontWeight: '600',
     },
     subtitle: {
       fontSize: 12,
       color: 'gray',
-      fontWeight: '800',
+      fontWeight: '500',
     },
     logout: {
-      fontWeight: '800',
+      fontWeight: '600',
       fontSize: 18,
       color: 'red'
     }
