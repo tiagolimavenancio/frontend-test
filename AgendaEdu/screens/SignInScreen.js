@@ -1,11 +1,11 @@
-import React from 'react';
+import React from 'react'
 import {
     View,
     Keyboard,
     StyleSheet,
     Alert,
     Image
-} from 'react-native';
+} from 'react-native'
 import {
     Container,
     Content,
@@ -18,18 +18,14 @@ import {
     Item,
     Icon,
     Footer    
-} from 'native-base';
-
-import { Actions } from 'react-native-router-flux';
-
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-
-import Colors from '../constants/Colors';
-
-import ReduxActions from '../redux/actions';
-import Loading from '../components/Loading';
-import Validates from '../utils/Validates';
+} from 'native-base'
+import { Actions } from 'react-native-router-flux'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import Colors from '../constants/Colors'
+import ReduxActions from '../redux/actions'
+import Loading from '../components/Loading'
+import Validates from '../utils/Validates'
 
 class SignInScreen extends React.Component {
 
@@ -43,7 +39,6 @@ class SignInScreen extends React.Component {
             isPasswordFocused: false,
             isPasswordValid: true    
         }
-
         this.submit = this.submit.bind(this)
         this.onSuccess = this.onSuccess.bind(this)
         this.onError = this.onError.bind(this)  
@@ -52,22 +47,21 @@ class SignInScreen extends React.Component {
     }
 
     async submit() {
-        Keyboard.dismiss()  
-        // if(Validates.isEmpty(this.state.email) || Validates.isEmpty(this.state.password))
-        //     return Alert.alert('Email e senha são obrigatórios')  
-
-        // (this.state.isEmailValid && this.state.isPasswordValid)
-        // ? await this.props.signIn(this.state.email, this.state.password, this.onSuccess, this.onError)
-        // : Alert.alert('Invalid Email or Password')
-        this.onSuccess() 
+        Keyboard.dismiss()        
+        if(Validates.isEmpty(this.state.email) || Validates.isEmpty(this.state.password))
+            return Alert.alert('Email e senha são obrigatórios')
+        
+        if(this.state.isEmailValid && this.state.isPasswordValid)             
+            await this.props.requestSign(this.state.email, this.state.password, this.onSuccess, this.onError) 
     }
 
-    onSuccess() {        
-        setTimeout(() => { Actions.authorized({ type: 'reset' }) }, 500)
+    onSuccess(data) {
+        console.log("Signed In With Success: ", data)       
+        setTimeout(() => { Actions.authorized({ type: 'reset' }), 500 })        
     }
 
-    onError(error) {
-        Alert.alert('Oops!', error.message)
+    onError(error) {        
+        Alert.alert('Oops!', error.response.data.message)
     }
 
     handleEmailFocus() {                      
@@ -167,7 +161,7 @@ function mapStateToProps(state){
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
-    return bindActionCreators(ReduxActions.authActions, dispatch);
+    return bindActionCreators(ReduxActions.AuthActions, dispatch)
 }
 
 const styles = StyleSheet.create({

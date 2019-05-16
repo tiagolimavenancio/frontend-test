@@ -17,10 +17,15 @@ import {
     ListItem    
 } from 'native-base'
 import { Actions } from 'react-native-router-flux'
-import Moment from 'moment';
-import 'moment/locale/pt-br';
-import Colors from '../constants/Colors';
-import events from '../sample.json';
+import Moment from 'moment'
+import 'moment/locale/pt-br'
+
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import ReduxActions from '../redux/actions'
+
+import Colors from '../constants/Colors'
+import events from '../sample.json'
 
 class HomeScreen extends React.Component {
     
@@ -48,6 +53,15 @@ class HomeScreen extends React.Component {
         this.onRefresh()        
     }
 
+    onRefresh() {        
+        this.setState({ isRefreshing: true })
+        setTimeout(() => {this.setState({ isRefreshing: false })}, 3000)
+    }
+
+    onLoad() {
+
+    }
+
     renderData() {
         const data = events.data;
         const sectionIds = [];
@@ -70,15 +84,6 @@ class HomeScreen extends React.Component {
         }
          
         return { dataBlob, sectionIds, rowIds }
-    }
-
-    onRefresh() {        
-        this.setState({ isRefreshing: true })
-        setTimeout(() => {this.setState({ isRefreshing: false })}, 3000)
-    }
-
-    onLoad() {
-
     }
 
     renderSectionHeader(sectionData) {               
@@ -133,6 +138,20 @@ class HomeScreen extends React.Component {
         )
     }
 } 
+
+function mapStateToProps(state) {
+    return {
+        state: {
+            events: state.events
+        }
+    }
+}
+
+function mapDispatchToProps(dispatch, ownProps) {
+    return {
+        actions: bindActionCreators(ReduxActions.EventsActions, dispatch)
+    }
+}
 
 const styles = StyleSheet.create({
     card: {
@@ -195,4 +214,4 @@ const styles = StyleSheet.create({
     }    
   })
 
-export default HomeScreen;
+export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);

@@ -43,7 +43,7 @@ class Navigator extends React.Component {
     }
 
     componentDidMount() {
-        Store.instance.dispatch(ReduxActions.authActions.checkSessionStatus((isLogged) => {
+        Store.instance.dispatch(ReduxActions.AuthActions.checkSessionStatus((isLogged) => {
             this.setState({ isReady: true, isLogged })
         }))
     }
