@@ -17,7 +17,7 @@ const configHeadersCredentials = (accessToken) => {
   
 (async () => {
   await Session.Credential.get('@Token:user').then((response) => {
-    if(response) {
+    if(response) {      
       configHeadersCredentials(response)
     }
   })

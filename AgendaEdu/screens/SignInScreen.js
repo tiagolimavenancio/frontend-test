@@ -16,8 +16,7 @@ import {
     Button,
     Form,
     Item,
-    Icon,
-    Footer    
+    Icon      
 } from 'native-base'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'

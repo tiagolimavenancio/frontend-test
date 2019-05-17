@@ -20,8 +20,8 @@ import ReduxActions from '../redux/actions';
 import Colors from '../constants/Colors';
 import Loading from '../components/Loading';
 
-import DrawerMenu from './layout/DrawerMenu';
-import MenuButton from './layout/MenuButton';
+import DrawerMenu from './drawer/DrawerMenu';
+import MenuButton from './drawer/MenuButton';
 import SignInScreen from '../screens/SignInScreen'
 import HomeScreen from '../screens/HomeScreen'
 import DetailScreen from '../screens/DetailScreen'
