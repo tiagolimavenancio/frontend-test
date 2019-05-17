@@ -40,10 +40,7 @@ function updateDataSource(rows) {
 class HomeScreen extends React.Component {
     
     constructor(props){        
-        super(props);  
-        this.state = {
-            isLoadingMore: false
-        }
+        super(props); 
         Moment.locale('pt-BR')  
         this.onRefresh = this.onRefresh.bind(this)
         this.onLoad = this.onLoad.bind(this)              
@@ -62,11 +59,9 @@ class HomeScreen extends React.Component {
 
     onLoad = async () => {
         const { events } = this.props.state
-        if (this.state.isLoadingMore || events.isLoading) return
-         
-        this.setState({ isLoadingMore: true })        
-        await this.props.loadMoreEvents(events.metadata.page)
-        this.setState({ isLoadingMore: false })               
+        if (events.isLoading) return
+    
+        await this.props.loadMoreEvents(events.metadata.page)                      
     }
 
     onSuccess() {
@@ -116,7 +111,7 @@ class HomeScreen extends React.Component {
 
     renderFooter = () => {  
         const { events } = this.props.state
-        if (!this.state.isLoadingMore && !events.isLoading) return
+        if (!events.isLoading) return
 
         return (
             <Footer style={styles.footer}>
@@ -139,7 +134,7 @@ class HomeScreen extends React.Component {
                         renderFooter={this.renderFooter} 
                         keyExtractor={(item, index) => item.key}
                         onEndReached={this.onLoad}
-                        onEndReachedThreshold={0.5} />
+                        onEndReachedThreshold={1} />
                 </Content>
             </Container>
         )
