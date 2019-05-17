@@ -17,12 +17,10 @@ import {
     Spinner
 } from 'native-base'
 import { Actions } from 'react-native-router-flux'
-
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
 import ReduxActions from '../../redux/actions'
-
 import Colors from '../../constants/Colors'
 import Layout from '../../constants/Layout'
 

@@ -12,12 +12,12 @@ let instance = axios.create({
 })
 
 const configHeadersCredentials = (accessToken) => {
-    instance.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+    instance.defaults.headers.common['token'] = `${accessToken}`;
 }
   
 (async () => {
   await Session.Credential.get('@Token:user').then((response) => {
-    if(response) {
+    if(response) {      
       configHeadersCredentials(response)
     }
   })
