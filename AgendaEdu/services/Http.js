@@ -12,7 +12,7 @@ let instance = axios.create({
 })
 
 const configHeadersCredentials = (accessToken) => {
-    instance.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+    instance.defaults.headers.common['token'] = `${accessToken}`;
 }
   
 (async () => {

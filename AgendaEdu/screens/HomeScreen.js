@@ -4,9 +4,7 @@ import {
     RefreshControl,    
     Image,
     StyleSheet,
-    ListView,
-    SectionList,
-    TouchableOpacity,
+    ListView,    
     ActivityIndicator
 } from 'react-native'
 import {
@@ -41,13 +39,12 @@ function updateDataSource(rows) {
 
 class HomeScreen extends React.Component {
     
-    constructor(props){
-        super(props);   
+    constructor(props){        
+        super(props);  
         this.state = {
-            isRefreshing: false, 
-            isLoading: false                          
+            isLoadingMore: false
         }
-        Moment.locale('pt-BR');  
+        Moment.locale('pt-BR')  
         this.onRefresh = this.onRefresh.bind(this)
         this.onLoad = this.onLoad.bind(this)              
     }
@@ -56,12 +53,20 @@ class HomeScreen extends React.Component {
         this.onRefresh()        
     }
 
-    onRefresh() {        
-        this.props.fakeEvents()               
+    onRefresh() {  
+        const { events } = this.props.state    
+        if(!events.isWaiting) {      
+            this.props.getEvents() 
+        }                        
     }
 
-    onLoad() {
-
+    onLoad = async () => {
+        const { events } = this.props.state
+        if (this.state.isLoadingMore || events.isLoading) return
+         
+        this.setState({ isLoadingMore: true })        
+        await this.props.loadMoreEvents(events.metadata.page)
+        this.setState({ isLoadingMore: false })               
     }
 
     onSuccess() {
@@ -69,14 +74,14 @@ class HomeScreen extends React.Component {
     }
     
     onError(error) {
-        Alert.alert('Oops!', error.response.data.message)
+        Alert.alert('Oops!', error.message)
     }
 
-    renderSectionHeader(sectionData, sectionID) {                
+    renderSectionHeader(sectionData, sectionID) {                     
         return (
             <ListItem noBorder style={{ marginLeft: 0, paddingLeft: 0 }}>
                 <Text style={ styles.sectionDate }>
-                    { Moment(sectionData.startAt).format('dddd, DD [de] MMMM') }
+                    { Moment(sectionID).format('dddd, DD [de] MMMM') }
                 </Text>
             </ListItem>
         )
@@ -95,7 +100,7 @@ class HomeScreen extends React.Component {
                         <View style={styles.content}>
                             <Text style={styles.text}>EVENTOS</Text>
                             <View style={{flex: 1, justifyContent: 'center'}}>
-                                <Text style={styles.name} numberOfLines={1}>{rowData.title}</Text>
+                                <Text style={styles.name} numberOfLines={1}>{rowData.title || ''}</Text>
                                 <View style={{ flexDirection: 'row' }}>
                                     <Icon name="time" style={styles.icon} />
                                     <Text style={styles.time}>{ Moment(rowData.startAt).format('LT') }</Text>
@@ -109,8 +114,9 @@ class HomeScreen extends React.Component {
         )
     }
 
-    renderFooter = () => {
-        if(!this.state.isLoading) return null;
+    renderFooter = () => {  
+        const { events } = this.props.state
+        if (!this.state.isLoadingMore && !events.isLoading) return
 
         return (
             <Footer style={styles.footer}>
@@ -120,19 +126,20 @@ class HomeScreen extends React.Component {
     }
 
     render() {    
-        let { data } = this.props.state.events    
-        let dataSource = updateDataSource(data)
-
+        let { events } = this.props.state           
+        let dataSource = updateDataSource(events.data)
         return(
             <Container>
                 <Content contentContainerStyle={{ padding: 10 }} 
-                    refreshControl={ <RefreshControl refreshing={this.state.isRefreshing} onRefresh={this.onRefresh} /> } >
+                    refreshControl={ <RefreshControl refreshing={events.isWaiting} onRefresh={this.onRefresh} /> } >
                     <ListView
                         dataSource={dataSource}
                         renderRow={this.renderRow}
                         renderSectionHeader={this.renderSectionHeader} 
                         renderFooter={this.renderFooter} 
-                        keyExtractor={(item, index) => item.key} />
+                        keyExtractor={(item, index) => item.key}
+                        onEndReached={this.onLoad}
+                        onEndReachedThreshold={0.5} />
                 </Content>
             </Container>
         )
