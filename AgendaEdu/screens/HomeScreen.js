@@ -16,8 +16,7 @@ import {
     Text,    
     Icon,    
     ListItem,
-    Footer,   
-    FooterTab
+    Footer    
 } from 'native-base'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
@@ -40,8 +39,11 @@ function updateDataSource(rows) {
 class HomeScreen extends React.Component {
     
     constructor(props){        
-        super(props); 
-        Moment.locale('pt-BR')  
+        super(props);
+        this.state = {
+            isHasMore = false
+        }
+        Moment.locale('pt-br')          
         this.onRefresh = this.onRefresh.bind(this)
         this.onLoad = this.onLoad.bind(this)              
     }

@@ -5,8 +5,7 @@ import events from '../../sample.json'
 
 export function getEvents() {
     return (dispatch) => {         
-        dispatch(waiting()) 
-        console.log("On Refresh")        
+        dispatch(waiting())               
         Http.get(`/events?limit=5&page=1`).then((response) => {  
             var arr = _.chain(response.data.data).map((event) => {                      
                 return event 
@@ -26,8 +25,7 @@ export function getEvents() {
 
 export function loadMoreEvents(page) {
     return (dispatch) => {        
-        dispatch(loading()) 
-        console.log("On Load")               
+        dispatch(loading())                       
         Http.get(`/events?limit=5&page=${Number(page)+1}`).then((response) => {
             var arr = _.chain(response.data.data).map((event) => {                      
                 return event 
