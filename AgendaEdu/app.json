@@ -24,6 +24,8 @@
     ],
     "ios": {
       "supportsTablet": true
-    }
+    },
+    "description": "Tiago Lima Venâncio",
+    "githubUrl": "https://github.com/tiagolimavenancio/frontend-test"
   }
 }
