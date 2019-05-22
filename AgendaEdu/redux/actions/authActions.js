@@ -2,17 +2,17 @@ import Types from '../types/authTypes'
 import Auth from '../../services/Auth'
 import Session from '../../services/Session'
 
-export function requestSign(email, password, callback, fail) {    
+export function requestSign(email, password, onSuccess, onFailure) {    
     return (dispatch) => {
         dispatch(waiting())                      
         Auth.signIn(email, password, (success, data, error) => {            
             if(success) {                
                 dispatch({ type: Types.SIGNED_IN, data })
                 dispatch(done()) 
-                callback(data)                
+                onSuccess(data)                
             }else {  
                 dispatch(done())              
-                fail(error)
+                onFailure(error)
             }            
         })                  
     }
@@ -38,17 +38,17 @@ export function checkSessionStatus(callback) {
     }
 }
 
-export function requestSignOut(callback, fail) {
+export function requestSignOut(onSuccess, onFailure) {
     return (dispatch) => {
         dispatch(waiting())
         Auth.signOut((success, error) => {
             if (success) {
                 dispatch({ type: Types.SIGNED_OUT })
                 dispatch(done())
-                callback()                
-            } else {
-                callback(error)
+                onSuccess()                
+            } else {                
                 dispatch(done())
+                onFailure(error)
             }            
         })        
     }

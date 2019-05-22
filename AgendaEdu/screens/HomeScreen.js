@@ -18,6 +18,7 @@ import {
     ListItem,
     Footer    
 } from 'native-base'
+import * as _ from 'lodash'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -25,6 +26,7 @@ import Moment from 'moment'
 import 'moment/locale/pt-br'
 import ReduxActions from '../redux/actions'
 import Colors from '../constants/Colors'
+import Theme from '../constants/Theme' 
 
 const ds = new ListView.DataSource({
   rowHasChanged: (r1, r2) => r1 !== r2,
@@ -39,11 +41,13 @@ function updateDataSource(rows) {
 class HomeScreen extends React.Component {
     
     constructor(props){        
-        super(props);
+        super(props);     
         this.state = {
-            isHasMore = false
-        }
-        Moment.locale('pt-br')          
+            canLoadMoreContent: false
+        }   
+        Moment.locale('pt-br')   
+        this.onSuccess = this.onSuccess.bind(this)
+        this.onError = this.onError.bind(this)   
         this.onRefresh = this.onRefresh.bind(this)
         this.onLoad = this.onLoad.bind(this)              
     }
@@ -55,22 +59,24 @@ class HomeScreen extends React.Component {
     onRefresh() {  
         const { events } = this.props.state    
         if(!events.isWaiting) {      
-            this.props.getEvents() 
+            this.props.getEvents(this.onSuccess, this.onError) 
         }                        
     }
 
-    onLoad = async () => {
+    onLoad = async () => {        
         const { events } = this.props.state
-        if (events.isLoading) return
+        if (!this.state.canLoadMoreContent) return
     
-        await this.props.loadMoreEvents(events.metadata.page)                      
+        await this.props.loadMoreEvents(events.metadata.page, this.onSuccess, this.onError)                            
     }
 
     onSuccess() {
-        console.log('Success')
+        this.setState({ canLoadMoreContent: true })
+        console.log("On Success")
     }
     
-    onError(error) {
+    onError(error) {  
+        this.setState({ canLoadMoreContent: false })      
         Alert.alert('Oops!', error.message)
     }
 
@@ -127,15 +133,16 @@ class HomeScreen extends React.Component {
         let dataSource = updateDataSource(events.data)
         return(
             <Container>
-                <Content contentContainerStyle={{ padding: 10 }} 
+                <Content contentContainerStyle={{ padding: 10 }}
                     refreshControl={ <RefreshControl refreshing={events.isWaiting} onRefresh={this.onRefresh} /> } >
                     <ListView
-                        dataSource={dataSource}
+                        dataSource={dataSource}                        
+                        pageSize={10}
                         renderRow={this.renderRow}
                         renderSectionHeader={this.renderSectionHeader} 
                         renderFooter={this.renderFooter} 
                         keyExtractor={(item, index) => item.key}
-                        onEndReached={this.onLoad}
+                        onEndReached={_.debounce(this.onLoad, 2000)}
                         onEndReachedThreshold={1} />
                 </Content>
             </Container>
