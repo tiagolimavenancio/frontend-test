@@ -51,7 +51,7 @@ class SignInScreen extends React.Component {
             return Alert.alert('Email e senha são obrigatórios')
         
         if(this.state.isEmailValid && this.state.isPasswordValid)             
-            await this.props.requestSign(this.state.email, this.state.password, this.onSuccess, this.onError) 
+            await this.props.requestSignIn(this.state.email, this.state.password, this.onSuccess, this.onError) 
     }
 
     onSuccess(data) {
@@ -97,7 +97,7 @@ class SignInScreen extends React.Component {
 
         return (
             <Container style={styles.container}>            
-                <Content padder scrollEnabled contentContainerStyle={styles.content}>                    
+                <Content padder contentContainerStyle={styles.content}>                    
                         <View style={styles.title}>
                             <Title style={styles.text}>Faça seu login</Title>
                             <Image 
