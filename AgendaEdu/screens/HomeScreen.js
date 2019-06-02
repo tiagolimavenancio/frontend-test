@@ -26,7 +26,6 @@ import Moment from 'moment'
 import 'moment/locale/pt-br'
 import ReduxActions from '../redux/actions'
 import Colors from '../constants/Colors'
-import Theme from '../constants/Theme' 
 
 const ds = new ListView.DataSource({
   rowHasChanged: (r1, r2) => r1 !== r2,
