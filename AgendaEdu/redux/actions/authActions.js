@@ -2,7 +2,7 @@ import Types from '../types/authTypes'
 import Auth from '../../services/Auth'
 import Session from '../../services/Session'
 
-export function requestSign(email, password, onSuccess, onFailure) {    
+export function requestSignIn(email, password, onSuccess, onFailure) {    
     return (dispatch) => {
         dispatch(waiting())                      
         Auth.signIn(email, password, (success, data, error) => {            
@@ -23,10 +23,7 @@ export function checkSessionStatus(callback) {
         dispatch(waiting())     
         Session.Credential.get('@Token:user').then((response) => {
             if(response) {                
-                dispatch({
-                    type: Types.SIGNED_IN,
-                    data: response
-                })
+                dispatch({ type: Types.SIGNED_IN, data: response })
                 dispatch(done())
                 callback(true)
             }else {
