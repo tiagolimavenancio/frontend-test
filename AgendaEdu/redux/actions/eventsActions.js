@@ -3,10 +3,10 @@ import Http from '../../services/Http'
 import Types from '../types/eventsTypes'
 import events from '../../sample.json'
 
-export function getEvents() {
+export function getEvents(onSuccess, onFailure) {
     return (dispatch) => {         
         dispatch(waiting()) 
-        console.log("On Refresh")        
+        console.log('On Refresh')              
         Http.get(`/events?limit=5&page=1`).then((response) => {  
             var arr = _.chain(response.data.data).map((event) => {                      
                 return event 
@@ -17,17 +17,18 @@ export function getEvents() {
                 metadata: response.data.metadata               
             })
             dispatch(done())
+            onSuccess()
         }).catch((error) => {
             dispatch(done())            
-            setTimeout(() => { alert(error.message), 1000 })
+            onFailure(error)
         })        
     }
 }
 
-export function loadMoreEvents(page) {
+export function loadMoreEvents(page, onSuccess, onFailure) {
     return (dispatch) => {        
-        dispatch(loading()) 
-        console.log("On Load")               
+        dispatch(loading())    
+        console.log('On Load')                   
         Http.get(`/events?limit=5&page=${Number(page)+1}`).then((response) => {
             var arr = _.chain(response.data.data).map((event) => {                      
                 return event 
@@ -38,9 +39,10 @@ export function loadMoreEvents(page) {
                 metadata: response.data.metadata
             })
             dispatch(done())
+            onSuccess()
         }).catch((error) => {
             dispatch(done())            
-            setTimeout(() => { alert(error.message), 1000 })
+            onFailure(error)
         })
     }
 }

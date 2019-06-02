@@ -51,7 +51,7 @@ class SignInScreen extends React.Component {
             return Alert.alert('Email e senha são obrigatórios')
         
         if(this.state.isEmailValid && this.state.isPasswordValid)             
-            await this.props.requestSign(this.state.email, this.state.password, this.onSuccess, this.onError) 
+            await this.props.requestSignIn(this.state.email, this.state.password, this.onSuccess, this.onError) 
     }
 
     onSuccess(data) {
@@ -96,56 +96,57 @@ class SignInScreen extends React.Component {
         }
 
         return (
-            <Container style={styles.container}>
-                <Content padder contentContainerStyle={styles.content}>
-                    <View style={styles.title}>
-                        <Title style={styles.text}>Faça seu login</Title>
-                        <Image 
-                            style={styles.image}
-                            source={require('../assets/icons/key.png')} />
-                    </View>
-                    <Form>
-                        <View>
-                            <Label style={styles.label}>E-mail ou usuário</Label> 
-                            <Item regular style={[styles.input, isEmailFocused ? styles.border : null, !isEmailValid ? styles.error : null]}>
-                                <Input                                                                                                         
-                                    returnKeyType='next' 
-                                    keyboardType={'email-address'}
-                                    autoCapitalize = 'none'
-                                    onChangeText={(email) => this.validate(email, 'email')} 
-                                    onEndEditing={() => this.validate()}
-                                    onFocus={this.handleEmailFocus} 
-                                    onBlur={this.handleEmailFocus}                                   
-                                    value={email} />   
-                                <Icon                                     
-                                    type="FontAwesome" 
-                                    name="envelope-o" 
-                                    style={styles.icon} />                            
-                            </Item>
-                        </View> 
-                        <View>
-                            <Label style={styles.label}>Senha</Label> 
-                            <Item regular style={[styles.input, isPasswordFocused ? styles.border : null, !isPasswordValid ? styles.error : null]}>
-                                <Input                                                                                                         
-                                    returnKeyType='done' 
-                                    secureTextEntry={true}
-                                    onChangeText={(password) => this.validate(password, 'password')}                                     
-                                    onEndEditing={() => this.validate()}
-                                    onFocus={this.handlePasswordFocus}
-                                    onBlur={this.handlePasswordFocus}
-                                    value={password}/>  
-                                <Icon                                     
-                                    name="eye-off"
-                                    style={styles.icon} />                
-                            </Item>
-                        </View>                                                
-                    </Form>   
-                    <View style={styles.sectionButton}>
-                        <Button block style={styles.btn} onPress={this.submit}>
-                            <Text uppercase={false} style={styles.titleBtn}>Entrar</Text>
-                        </Button>
-                    </View>  
-                </Content>
+            <Container style={styles.container}>            
+                <Content padder contentContainerStyle={styles.content}>                    
+                        <View style={styles.title}>
+                            <Title style={styles.text}>Faça seu login</Title>
+                            <Image 
+                                style={styles.image}
+                                source={require('../assets/icons/key.png')} />
+                        </View>                        
+                        <Form>
+                            <View>
+                                <Label style={styles.label}>E-mail ou usuário</Label> 
+                                <Item regular style={[styles.input, isEmailFocused ? styles.border : null, !isEmailValid ? styles.error : null]}>
+                                    <Input                                                                                                         
+                                        returnKeyType='next' 
+                                        keyboardType={'email-address'}
+                                        autoCapitalize = 'none'
+                                        onChangeText={(email) => this.validate(email, 'email')} 
+                                        onEndEditing={() => this.validate()}
+                                        onFocus={this.handleEmailFocus} 
+                                        onBlur={this.handleEmailFocus}                                   
+                                        value={email} />   
+                                    <Icon                                     
+                                        type="FontAwesome" 
+                                        name="envelope-o" 
+                                        style={styles.icon} />                            
+                                </Item>
+                            </View> 
+                            <View>
+                                <Label style={styles.label}>Senha</Label> 
+                                <Item regular style={[styles.input, isPasswordFocused ? styles.border : null, !isPasswordValid ? styles.error : null]}>
+                                    <Input                                                                                                         
+                                        returnKeyType='done' 
+                                        secureTextEntry={true}
+                                        onChangeText={(password) => this.validate(password, 'password')}                                     
+                                        onEndEditing={() => this.validate()}
+                                        onFocus={this.handlePasswordFocus}
+                                        onBlur={this.handlePasswordFocus}
+                                        value={password}/>  
+                                    <Icon                                     
+                                        name="eye-off"
+                                        style={styles.icon} />                
+                                </Item>
+                            </View>                                                
+                        </Form> 
+                          
+                        <View style={styles.sectionButton}>
+                            <Button block style={styles.btn} onPress={this.submit}>
+                                <Text uppercase={false} style={styles.titleBtn}>Entrar</Text>
+                            </Button>
+                        </View>                     
+                </Content> 
             </Container>
         )
     }

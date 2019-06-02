@@ -91,8 +91,7 @@ class Navigator extends React.Component {
                                     key='detail'
                                     component={ DetailScreen }                                     
                                     titleStyle={ Platform.OS == "ios" ? {} : styles.navTitleStyle }
-                                    title= 'Detalhes do evento'
-                                    tintColor='black'
+                                    title= 'Detalhes do evento'                                    
                                     hideNavBar={false} />
                             </Stack>
                         </Stack>
