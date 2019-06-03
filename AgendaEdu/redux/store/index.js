@@ -3,7 +3,7 @@ import thunk from 'redux-thunk'
 import logger from 'redux-logger'
 import reducers from '../reducers'
 
-const middleware = [logger, thunk]
+const middleware = [thunk]
 
 export function configureStore() {
     return compose(applyMiddleware(...middleware))(createStore)(reducers)

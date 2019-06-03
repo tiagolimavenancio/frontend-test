@@ -5,7 +5,8 @@ import {
     Image,
     StyleSheet,
     ListView,    
-    ActivityIndicator
+    ActivityIndicator,
+    Alert
 } from 'react-native'
 import {
     Container,
@@ -55,7 +56,7 @@ class HomeScreen extends React.Component {
         this.onRefresh()        
     }
 
-    onRefresh() {  
+    onRefresh = async () => {  
         const { events } = this.props.state    
         if(!events.isWaiting) {      
             this.props.getEvents(this.onSuccess, this.onError) 

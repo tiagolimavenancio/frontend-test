@@ -60,7 +60,7 @@ class SignInScreen extends React.Component {
     }
 
     onError(error) {        
-        Alert.alert('Oops!', error.response.data.message)
+        Alert.alert('Oops!', error.message)
     }
 
     handleEmailFocus() {                      
