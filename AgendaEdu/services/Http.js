@@ -1,26 +1,20 @@
-import axios from 'axios'
+import { create } from 'apisauce'
 import Session from './Session'
 import Config from '../env.json'
 
-let instance = axios.create({
+const instance = create({
     baseURL: Config.BASE_URL,
     timeout: 600000,
     headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-    }    
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    }      
 })
 
-const configHeadersCredentials = (accessToken) => {
-    instance.defaults.headers.common['token'] = `${accessToken}`;
-}
-  
-(async () => {
-  await Session.Credential.get('@Token:user').then((response) => {
-    if(response) {      
-      configHeadersCredentials(response)
-    }
-  })
-})()
+instance.addAsyncRequestTransform(request => async () => {
+  const token = await Session.Credential.get('@AgendaEdu:token')
+  if(token)
+    request.headers['token'] = token
+})
 
 export default instance;

@@ -5,7 +5,8 @@ import {
     Image,
     StyleSheet,
     ListView,    
-    ActivityIndicator
+    ActivityIndicator,
+    Alert
 } from 'react-native'
 import {
     Container,
@@ -26,7 +27,6 @@ import Moment from 'moment'
 import 'moment/locale/pt-br'
 import ReduxActions from '../redux/actions'
 import Colors from '../constants/Colors'
-import Theme from '../constants/Theme' 
 
 const ds = new ListView.DataSource({
   rowHasChanged: (r1, r2) => r1 !== r2,
@@ -56,7 +56,7 @@ class HomeScreen extends React.Component {
         this.onRefresh()        
     }
 
-    onRefresh() {  
+    onRefresh = async () => {  
         const { events } = this.props.state    
         if(!events.isWaiting) {      
             this.props.getEvents(this.onSuccess, this.onError) 
