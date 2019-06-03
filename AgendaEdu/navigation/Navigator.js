@@ -43,7 +43,11 @@ class Navigator extends React.Component {
     }
 
     componentDidMount() {
-        Store.instance.dispatch(ReduxActions.AuthActions.checkSessionStatus((isLogged) => {
+        this.checkSessionToken()
+    }
+
+    async checkSessionToken() {
+        await Store.instance.dispatch(ReduxActions.AuthActions.checkSessionStatus((isLogged) => {            
             this.setState({ isReady: true, isLogged })
         }))
     }

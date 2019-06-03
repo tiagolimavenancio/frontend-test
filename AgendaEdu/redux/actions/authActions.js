@@ -21,12 +21,12 @@ export function requestSignIn(email, password, onSuccess, onFailure) {
 export function checkSessionStatus(callback) {
     return (dispatch) => {   
         dispatch(waiting())     
-        Session.Credential.get('@Token:user').then((response) => {
-            if(response) {                
+        Session.Credential.get('@AgendaEdu:token').then((response) => {
+            if(response) {                          
                 dispatch({ type: Types.SIGNED_IN, data: response })
                 dispatch(done())
                 callback(true)
-            }else {
+            }else {                
                 dispatch({ type: Types.SIGNED_OUT })
                 dispatch(done())
                 callback(false)

@@ -1,13 +1,11 @@
 import * as _ from 'lodash'
 import Http from '../../services/Http'
 import Types from '../types/eventsTypes'
-import events from '../../sample.json'
 
 export function getEvents(onSuccess, onFailure) {
     return (dispatch) => {         
-        dispatch(waiting()) 
-        console.log('On Refresh')              
-        Http.get(`/events?limit=5&page=1`).then((response) => {  
+        dispatch(waiting())                             
+        Http.get(`/events?limit=5&page=1`).then((response) => {              
             var arr = _.chain(response.data.data).map((event) => {                      
                 return event 
             }).orderBy('startAt', 'desc').groupBy('startAt').value()                                    
@@ -27,8 +25,7 @@ export function getEvents(onSuccess, onFailure) {
 
 export function loadMoreEvents(page, onSuccess, onFailure) {
     return (dispatch) => {        
-        dispatch(loading())    
-        console.log('On Load')                   
+        dispatch(loading())                            
         Http.get(`/events?limit=5&page=${Number(page)+1}`).then((response) => {
             var arr = _.chain(response.data.data).map((event) => {                      
                 return event 
