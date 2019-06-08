@@ -3,8 +3,7 @@ import Session from './Session'
 import Config from '../env.json'
 
 const instance = create({
-    baseURL: Config.BASE_URL,
-    timeout: 600000,
+    baseURL: Config.BASE_URL,    
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json'
